@@ -1,0 +1,151 @@
+const {test,expect, selectors} = require('@playwright/test');
+
+
+//playwright.$('span:has-text("Text Box")')        //วิธีหาตำแหน่งในหน้า UI แบบเฉพาะ ***ใช้ในConsole F12***
+//playwright.$$('span.text')                       //วิธีหาตำแหน่งแบบเลือกหา  ***ใช้ในConsole F12***
+//playwright.inspect('text=Log in')                //วิธีหาตำแหน่งแบบไปที่หน้ารวมทั้งหมด  ***ใช้ในConsole F12***
+
+// test("First Test",async ({page})=>{
+//     // Write testing code here
+//     await page.goto("https://playwright.dev");
+//     // await page.locator('navbar_title , navbar_inner')
+//     await page.click("text=Docs");
+//     await page.pause();
+//     await page.click("text=Writing tests");
+//     await page.locator('.navbar_title').click('text=Playwright');
+//     // await page.locator ('.navbar_title , .navbar_inner');
+//     // await page.click("text=Playwright");
+//  })
+
+// test("click testing", async ({page})=>{
+//     //write test code here
+//    await page.goto("https://the-internet.herokuapp.com");
+//    const element = page.locator('text=Add/Remove Elements');
+//    const addElement = page.locator('text=Add Element');
+//    await element.click();
+//    await page.pause();
+//    await addElement.click();
+
+// })
+
+// test.describe ('test group', () => {
+//   test('one', async ({ page }) => {
+//     // write
+//     await page.goto ("https://the-internet.herokuapp.com/");
+//     await page.click('text=Add/Remove Elements');
+//   });
+
+//   test('skipbrowser test', async ({ page, browserName }) => {
+//     // write
+//     test.skip(browserName === 'chromium', 'working on the chromium');
+//     await page.goto ("https://the-internet.herokuapp.com/");
+//     await page.click('text=Add/Remove Elements');
+//     await page.pause();
+//     await page.click('text=Add Element');
+//   });
+// });
+                                                            //test.describe คือ การสร้างกลุ่มทดสอบ
+test.describe.parallel("BeforeEachAndAfterEach", () => {             //BeforeEach สามารถใช้กับฟังค์ชั่นที่ใช้บ่อยๆโดยไม่ให้ซํ้าซ้อนได้
+                                                            //AfterEach สามารถใช้ได้หลังจากการทดสอบเสร็จสิ้นได้คล้ายๆกับ Before
+   test.beforeEach(async ({page}) =>{                       //parallel คือการทดสอบแบบคู่ขนาน โดยจะต้องใช้คู่กับ describe
+      await page.goto("/");
+      await page.pause();
+   })
+
+   test.afterEach(async ({page}) =>{
+      // console.log('Test pass');
+
+   })
+
+   test("First Test ",async ({page})=>{
+      // Write testing code here
+      // await page.locator('a.navbar__item.navbar__link [{href="/community/welcome"}]').click();
+      await page.getByRole("link",{name:'Community'}).click();
+      await page.click("text=Conference Videos");
+      // await page.pause();
+      await page.locator("b.navbar__title").click();
+      // await page.pause();
+      //  await page.locator('a.navbar__item.navbar__link [href="/community/welcome"]').click();
+      //  const Home = page.locator('.navbar_inner .navbar_title');
+      //  await expect(Home).toHaveText('Playwright');
+   //     // await title.click("text=Playwright");
+   })
+
+   test("Second Test @smoke",async ({page})=>{
+      // Write testing code here
+      await page.goto("https://the-internet.herokuapp.com/");
+      await page.click("text=Add/Remove Elements");
+      await page.click("text=Add Element");
+   });
+
+   test("Third Test @regression",async ({page})=>{
+      // Write testing code here
+      await page.goto("https://the-internet.herokuapp.com/");
+      await page.click("text=Add/Remove Elements");
+      await page.click("text=Add Element");
+   });
+});
+
+
+// test("Four Test @regression-smoke",async ({page})=>{
+//     // Write testing code here
+//    await page.goto("https://the-internet.herokuapp.com/");
+//    await page.click("text=Add/Remove Elements");
+//    await page.click("text=Add Element");
+// });
+
+// test("Screenshot Test @regression-smoke",async ({page})=>{
+//     // Write testing code here
+//    await page.goto("https://the-internet.herokuapp.com/");
+//    await page.click("text=Add/Remove Elements");
+//    await page.click("text=Add Element");
+// //    await page.pause();
+//    const photo = page.locator('text=Add Element'); //เฉพาะเจาะจง
+//    await photo.screenshot ({path: "screenshot1.png"}) //เฉพาะเจาะจง
+// //    await page.screenshot ({path: "screenshot1.png"});
+
+// });
+
+
+test.describe("Finding Locators", () => {
+
+   // test.beforeEach(async ({page}) =>{                       
+   //    await page.pause();
+   // })
+
+   test("Testing selectors", async ({page}) => {
+
+      await page.goto("https://demoqa.com/text-box");
+      await page.locator('#userName').type("Test Username");   //.locator(ID).type(Username);
+      await page.locator('[placeholder="name@example.com"]').type("testmail1@gmail.com");   //.locator([Attribute]).type(Email);
+      await page.locator('[placeholder="Current Address"]').type("Test Current Address");
+      await page.locator('#permanentAddress').type("Test Permanent Address");
+      await page.locator('button:has-text("Submit")').click();
+
+      await page.pause();
+      const name= page.locator('p#name');
+      const email= page.locator('p#email');
+      const currentAddress= page.locator('p#currentAddress');
+      const permanentAddress= page.locator('p#permanentAddress');
+
+      await expect(name).toBeVisible();                                                            //expect().to...(); .ใช้สำหรับการเช็คความถูกต้องหรือความคาดหวัง
+      await expect(name).toHaveText("Name:Test Username");
+      await expect(email).toBeVisible();
+      await expect(email).toHaveText("Email:testmail1@gmail.com");
+      await expect(currentAddress).toBeVisible();
+      await expect(currentAddress).toHaveText("Current Address :Test Current Address");
+      await expect(permanentAddress).toBeVisible();
+      await expect(permanentAddress).toHaveText("Permananet Address :Test Permanent Address");
+   })
+
+   test("Finding Assertions", async ({page}) => {
+
+      await page.goto("https://playwright.dev/docs/test-snapshots");
+      // await expect(page).toHaveTitle("Fast and reliable end-to-end testing for modern web apps | Playwright");
+      await expect(page).toHaveURL("https://playwright.dev/docs/test-snapshots");
+      await expect(page).toHaveScreenshot("playwright.png");
+
+   })
+
+   
+});
