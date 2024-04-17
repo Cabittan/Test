@@ -1,0 +1,60 @@
+//npx playwright codegen ...URL... (ไว้ใช้เข้าเว็บเพื่อเปิด Inspecter)
+
+const { test, expect } = require ('@playwright/test');
+
+    test.describe("Authentication", () => {
+
+        test.use ({
+
+            storageState:'AuthNogen.json'       //ถ้าError ที่ StorageState มีโอกาสเป็นเพราะรหัสหมดอายุ
+
+        });
+
+        test.beforeEach(async ({ page }) => {
+
+            await page.goto('https://parabank.parasoft.com/parabank/index.htm');
+
+        });
+
+        test.skip("Saving Authentication", async ({ page }) => {
+
+            await page.locator('input[name="username"]').click();
+            await page.locator('input[name="username"]').fill('authentication');
+            await page.locator('input[name="password"]').click();
+            await page.locator('input[name="password"]').fill('authen123');
+        // await page.locator('text=Log In').click();
+            await page.getByRole('button', { name: 'Log In' }).click();
+            await page.context().storageState({ path: 'AuthNogen.json'});           //1.1 ใช้สำหรับสร้าง Cookie login อัตโนมัติ
+
+        });
+
+        test.only("Test1", async ({ page }) => {
+
+            await page.getByRole('link', { name: 'Transfer Funds' }).first().click();       //.first()ใช้สำหรับเลือกใช้โลเคชั่นแรกที่เจอ
+            await page.locator('#amount').click();
+            await page.locator('#amount').fill('200');
+            await page.pause();
+            await page.getByRole('button', { name: 'Transfer' }).click();
+            await page.pause();
+        });
+
+        test("Test2", async ({ page }) => {
+
+            await page.getByRole('link', { name: 'Bill Pay' }).first().click();
+            
+        });
+
+        test("Test3", async ({ page }) => {
+
+            await page.getByRole('link', { name: 'Find Transactions' }).click();
+    
+        });
+
+        test.skip("Test4", async ({ page }) => {
+
+            await page.getByRole('link', { name: 'Log Out' }).first().click();      //ถ้าจะใช้ logout ต้องเปิด Testcase หัวข้อ 'Saving Authentication'  ไว้ไม่อย่างนั้นถ้ารันอีกครั้งจะล้มเหลว
+    
+        });
+
+
+    });
