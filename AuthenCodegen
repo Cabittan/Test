@@ -1,0 +1,14 @@
+//  npx playwright codegen --save-storage=auth.json parabank.parasoft.com       สร้างรหัสนำมา login จะเก็บข้อมูลในไฟล์ cookie ชื่อ auth.json
+//  npx playwright codegen --load-storage=auth.json parabank.parasoft.com       ไว้รันใช้งาน
+
+const { test, expect } = require ('@playwright/test');
+
+test.describe("Authentication", async ({ page }) => {
+
+    test("Saving Authentication", async ({ page }) => {
+
+
+
+    });
+
+});
