@@ -1,0 +1,12 @@
+// npx playwright codegen ...URL...
+
+const { test, expect } = require ('@playwright/test');
+
+test('test', async ({ page }) => {
+  await page.goto('https://playwright.dev/');
+  await page.getByRole('link', { name: 'Docs' }).click();
+  await page.getByRole('link', { name: 'Community' }).click();
+  await page.getByRole('link', { name: 'Release Videos', exact: true }).click();
+  await page.getByRole('link', { name: 'Live Streams' }).click();
+  await page.getByRole('link', { name: 'Feature Videos' }).click();
+});
