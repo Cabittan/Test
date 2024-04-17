@@ -1,0 +1,39 @@
+const {PlaywrightTestConfig} = require ('playwright/test');
+
+const config = {
+
+    //retries: 1,
+    timeout: 60000,
+    // workers: 2,
+    // fullyParallel: true,
+    // reporter: './reporter.js',
+    use: {
+        baseURL: "https://playwright.dev",
+        headless: false,
+        viewport: {width: 1920, height: 1080},
+        video: "off",           // on-first-retry ไมบันทึกในการผิดพลาดครั้งแรก   //retain-on-failure บันทึกเมื่อผิดพลาด    //on ถ่ายทั้งหมด
+        screenshot: "off",      //on ถ่ายตอนจบ    //only-on-failure ถ่ายเมื่อผิดพลาด
+        trace:"off",             //on    //on-first-retry
+        
+    },
+
+    projects: [
+        {
+
+            name: 'Chrome',
+            use: {browserName: 'chromium'}
+        },
+        {
+            name: 'Firefox',
+            use: {browserName: 'firefox'}
+        },
+        {
+            name: 'Webkit',
+            use: {browserName: 'webkit'}
+        },
+
+    ]
+
+}
+
+module.exports = config;
