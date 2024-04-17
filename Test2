@@ -1,0 +1,130 @@
+const { test, expect, selectors } = require('@playwright/test');
+
+test.describe.configure({ mode: 'parallel' });
+
+test.use({
+
+    viewport: { width: 1280, height: 720 }
+
+});
+
+test.skip("Click", async ({ page }) => {
+
+    await page.goto("https://practice.automationtesting.in/shop/");
+    // await page.getByRole('link', { name: 'Android', exact: true }).click();
+
+    await page.locator('[href="https://practice.automationtesting.in/product-category/android/"]').click();
+    await page.pause();
+    // await page.locator('text=HTML').first().click();
+    // await page.locator('text=JavaScript').first().click();
+});
+
+test.skip("Login", async ({ page }) => {
+
+    await page.goto('https://parabank.parasoft.com/parabank/index.htm');
+    await page.locator('input[name="username"]').click();
+    await page.locator('input[name="username"]').fill('authentication');
+    await page.locator('input[name="password"]').click();
+    await page.locator('input[name="password"]').fill('authen123');
+    // await page.locator('text=Log In').click();
+    await page.getByRole('button', { name: 'Log In' }).click();
+});
+
+test.skip("Click element", async ({ page }) => {
+    // Write testing code here
+    await page.goto("https://the-internet.herokuapp.com/");
+    await page.click("text=Add/Remove Elements");
+    await page.click("text=Add Element");
+});
+
+test.skip("Checkbox", async ({ page }) => {
+    // Write testing code here
+    await page.goto("https://the-internet.herokuapp.com/");
+    await page.locator('text=Checkboxes').click();
+    // await page.locator('input[type="checkbox"]').first().check();
+    // await page.locator('input[type="checkbox"]').last().uncheck();
+
+    await page.getByRole('checkbox').nth(0).check();            //.nth(0) สามารถใช้ได้ถ้ามี Checkbox หลายอัน
+    await page.getByRole('checkbox').nth(1).uncheck();
+});
+
+test.skip("Drag and Drop", async ({ page }) => {
+
+    await page.goto("https://the-internet.herokuapp.com/drag_and_drop");
+    await page.dragAndDrop('#column-a', '#column-b');
+    await page.pause();
+
+});
+
+test.skip("Dropdown", async ({ page }) => {
+    await page.goto("https://the-internet.herokuapp.com/dropdown")
+    await page.locator("#dropdown").selectOption({ label: 'Option 1' });
+    await expect(page.locator('#dropdown')).toHaveValue('1');
+
+
+});
+
+test.skip("Dealing with iframes", async ({ page }) => {
+
+    await page.goto('https://the-internet.herokuapp.com/iframe');
+    const iframe = page.frameLocator('#mce_0_ifr').locator('html');
+    await iframe.click();
+    await iframe.type('Hello world');
+
+})
+
+test.skip("Downloader", async ({ page }) => {
+
+    await page.goto('https://the-internet.herokuapp.com/download');
+    // Start waiting for download before clicking. Note no await.
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByText('TextDoc.txt').click();
+    const download = await downloadPromise;
+
+    const path = await download.path();     // รับที่อยู่ของไฟล์ที่ดาวน์โหลด
+    const url = await download.url();       // รับ URL ของไฟล์ที่ดาวน์โหลด
+    console.log(path);                      // แสดงที่อยู่ของไฟล์ที่ดาวน์โหลด
+    console.log(url);                       // แสดง URL ของไฟล์ที่ดาวน์โหลด
+    // page.on('download', download => download.path().then(console.log));   ***ไม่เข้าใจ***
+    await page.pause();
+});
+
+test.skip("Upload", async ({ page }) => {
+
+    await page.goto('https://the-internet.herokuapp.com')
+    await page.locator('text=File Upload').click();
+    // await page.setInputFiles('#file-upload', 'uploadP/fire.pdf');
+    // await page.locator('input:has-text("Upload")').click();
+    // await expect(page.locator('text=File Uploaded!')).toBeVisible();
+    // await expect(page.locator('text=fire.pdf')).toBeVisible();
+
+    // Start waiting for file chooser before clicking. Note no await.
+    const fileCP = page.waitForEvent('filechooser');
+    await page.locator('#file-upload').click();
+    const fileChooser = await fileCP;
+    await fileChooser.setFiles('upload/fire.pdf');
+
+    await page.locator('input:has-text("Upload")').click();
+    await expect(page.locator('text=File Uploaded!')).toBeVisible();
+    await expect(page.locator('text=fire.pdf')).toBeVisible();
+
+    await page.pause();
+
+});
+
+
+test.skip("Hover", async ({ page }) => {
+
+    await page.goto('https://the-internet.herokuapp.com/hovers');
+    await page.getByRole('img', { name: 'User Avatar' }).nth(1).hover();
+    await expect(page.getByRole('heading', { name: 'name: user2' })).toBeVisible();
+    await page.locator('text=View profile').nth(1).click();
+});
+
+test("Keypress", async ({ page }) => {
+
+    await page.goto('https://the-internet.herokuapp.com/key_presses?');
+    await page.press('#target','Enter');
+    await page.press('#target','F2');
+
+});
